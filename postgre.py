@@ -26,9 +26,11 @@ def table_creation(conn):
 
 def new_client(conn, client_name, client_surname, client_email):
     with conn.cursor() as cur:
-        cur.execute("""INSERT INTO client(name, sur_name, email) VALUES (%s, %s, %s);""",
+        cur.execute("""INSERT INTO client(name, sur_name, email) VALUES (%s, %s, %s) RETURNING id;""",
                     (client_name, client_surname, client_email))
-        print(f'Добавлен новый пользователь с именем {client_name}')
+        client_id = cur.fetchone()[0]
+        conn.commit()
+        print(f'Добавлен новый пользователь с именем {client_name} и id "{client_id}"')
 
 
 def phone_adding(conn, client_id, client_phone):
